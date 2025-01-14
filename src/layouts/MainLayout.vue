@@ -56,28 +56,23 @@ import EssentialLink from 'components/EssentialLink.vue'
 const linksList = [
   {
     title: 'Home',
-    caption: 'quasar.dev',
+
     icon: 'school',
-    link: 'http://localhost:9001/#/'
+    link: '/#/'
   },
   {
     title: 'Patient Editor',
-    caption: 'github.com/quasarframework',
+
     icon: 'search',
     link: '/#/patient-table'
   },
   {
     title: 'Search Patient',
-    caption: 'chat.quasar.dev',
+
     icon: 'chat',
     link: '/#/search-patient'
   },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
+
 
 ]
 
