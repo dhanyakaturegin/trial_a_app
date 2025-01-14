@@ -196,7 +196,7 @@
 </template>
 
 <script>
-import { addDoc, updateDoc, doc, collection, getFirestore, getDocs } from 'firebase/firestore'
+import { addDoc, updateDoc, doc, collection, getFirestore, onSnapshot } from 'firebase/firestore'
 import { getApp } from 'firebase/app'
 
 
@@ -487,11 +487,19 @@ export default {
     }
   },
   async mounted() {
-    // Fetch all patients from Firestore
-    const querySnapshot = await getDocs(collection(db, 'patients'))
-    querySnapshot.forEach(doc => {
-      this.patients.push({ id: doc.id, ...doc.data() })
+    // Fetch all patients from Firestore in real-time
+    this.unsubscribe = onSnapshot(collection(db, 'patients'), (querySnapshot) => {
+      this.patients = [] // Clear the array to avoid duplicates
+      querySnapshot.forEach(doc => {
+        this.patients.push({ id: doc.id, ...doc.data() })
+      })
     })
+  },
+  beforeUnmount() {
+    // Stop listening for real-time updates
+    if (this.unsubscribe) {
+      this.unsubscribe()
+    }
   }
 }
 </script>

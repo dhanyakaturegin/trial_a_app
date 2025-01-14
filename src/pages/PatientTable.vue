@@ -10,6 +10,7 @@
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <q-btn flat icon="edit_note" @click="editRow(props.row)" />
+          <q-btn flat icon="delete" color="negative" @click="deletePatient(props.row.id)" />
         </q-td>
       </template>
     </q-table>
@@ -55,7 +56,7 @@
 </template>
 
 <script>
-import { addDoc, updateDoc, doc, collection, getFirestore, getDocs } from 'firebase/firestore'
+import { addDoc, updateDoc, deleteDoc, doc, collection, getFirestore, getDocs, onSnapshot } from 'firebase/firestore'
 import { getApp } from 'firebase/app'
 
 // Initialize Firestore
@@ -265,11 +266,14 @@ export default {
       await this.saveToFirebase(formData)
     },
     async fetchPatients() {
-      const querySnapshot = await getDocs(collection(db, 'patients'))
-      querySnapshot.forEach((doc) => {
-        this.patients.push({ id: doc.id, ...doc.data() })
+      const patientsCollection = collection(db, 'patients')
+      onSnapshot(patientsCollection, (querySnapshot) => {
+        this.patients = [] // Clear the array before updating
+        querySnapshot.forEach((doc) => {
+          this.patients.push({ id: doc.id, ...doc.data() })
+        })
       })
-    },
+},
     editRow(row) {
       this.editedPatient = { ...row }
       this.isDialogOpen = true
@@ -286,6 +290,15 @@ export default {
         console.error('Error updating document:', error)
       }
     },
+    async deletePatient(id) {
+      try {
+        await deleteDoc(doc(db, 'patients', id))
+        this.patients = this.patients.filter(patient => patient.id !== id)
+        console.log('Document deleted with ID:', id)
+      } catch (error) {
+        console.error('Error deleting document:', error)
+      }
+    }
   },
 
   watch: {

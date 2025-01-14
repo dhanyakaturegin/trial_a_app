@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title class="text-h6">
-          patient management system
+          patient management system - Dr. Sampath gnanarathne
         </q-toolbar-title>
 
 
